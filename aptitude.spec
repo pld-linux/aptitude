@@ -7,12 +7,12 @@ Version:	0.1.4
 Release:	0
 URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
-Patch0:		aptitude-make.patch
-Patch1:		aptitude-patch1
+Patch0:		%{name}-make.patch
+Patch1:		%{name}-patch1
 License:	GPL
 Group:		Applications/Archiving
-Group(pl):	Aplikacje/Archiwizacja
 Group(de):	Applikationen/Archivierung
+Group(pl):	Aplikacje/Archiwizacja
 BuildRequires:	gzip
 BuildRequires:	apt-devel >= 0.3.19cnc36
 BuildRequires:	ncurses-devel
@@ -32,8 +32,8 @@ everything that dselect and console-apt do, and has its own extra
 features as well.
 
 %description -l pl
-Aptitute jest graficzn±, bazuj±c± na ncurses nak³adk± na narzêdzie
-apt z wieloma ró¿nimi, u¿ytecznymi opcjami.
+Aptitute jest graficzn±, bazuj±c± na ncurses nak³adk± na narzêdzie apt
+z wieloma ró¿nimi, u¿ytecznymi opcjami.
 
 %description -l pt_BR
 O Aptitude é uma interface curses para o apt com um número de
