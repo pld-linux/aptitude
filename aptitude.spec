@@ -2,7 +2,7 @@ Summary:	Curses-based apt frontend
 Summary(pt_BR):	Interface curses para o apt
 Summary(pl):	Frontend dla apta oparty na bibliotece ncurses
 Name:		aptitude
-Version:	0.1.4
+Version:	0.2.6.5
 Release:	0
 URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
@@ -42,8 +42,8 @@ personalizável.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p1
-%patch1 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 %build
 rm -f missing
