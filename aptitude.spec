@@ -1,7 +1,6 @@
-Summary:	curses-based apt frontend
-Summary(pt_BR):Interface curses para o apt
-Summary(es):	Curses-based apt frontend
-Summary(pl):	Frontend dla apt'a oparty na bibliotece ncurses
+Summary:	Curses-based apt frontend
+Summary(pt_BR):	Interface curses para o apt
+Summary(pl):	Frontend dla apta oparty na bibliotece ncurses
 Name:		aptitude
 Version:	0.1.4
 Release:	0
@@ -41,18 +40,13 @@ características úteis e avançadas, incluindo: uma sintaxe semelhante à
 do mutt para casamento de padrões em pacotes, de uma forma flexível e
 personalizável.
 
-%description -l es
-Aptitude is a curses-based apt frontend with a number of useful
-extended features, including: a mutt-like syntax for matching packages
-in a flexible and extreme flexibility and customization.
-
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1
 %patch1 -p1
 
 %build
-rm missing
+rm -f missing
 gettextize --copy --force
 aclocal
 autoconf
@@ -61,7 +55,7 @@ automake -a -c
 %configure
 %{__make}
 
-gzip AUTHORS INSTALL NEWS COPYING README TODO %{name}-hackers-guide.txt
+gzip -9nf AUTHORS INSTALL NEWS COPYING README TODO %{name}-hackers-guide.txt
 
 %install
 rm -rf $RPM_BUILD_ROOT
