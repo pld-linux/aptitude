@@ -48,9 +48,9 @@ personalizável.
 rm -f missing
 gettextize --copy --force
 aclocal
-autoconf
+%{__autoconf}
 autoheader
-automake -a -c -f
+%{__automake}
 %configure
 %{__make}
 
