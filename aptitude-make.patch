@@ -1,0 +1,372 @@
+diff -urN aptitude-0.0.7.15.org/configure.in aptitude-0.0.7.15/configure.in
+--- aptitude-0.0.7.15.org/configure.in	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/configure.in	Sat Feb 24 15:34:05 2001
+@@ -10,8 +10,10 @@
+ AC_PROG_CXX
+ AC_PROG_RANLIB
+ 
++LIBS="$LIBS -lrpm -lrpmbuild -lrpmio -lpopt"
++
+ dnl Checks for libraries.
+-AC_CHECK_LIB(curses, initscr)
++AC_CHECK_LIB(ncurses, initscr)
+ AC_CHECK_LIB(apt-pkg, main, , AC_MSG_ERROR([Can't find the APT libraries -- please install libapt-pkg-dev]))
+ AC_CHECK_LIB(pthread, main,
+ 	HAVE_LIBPTHREAD=1
+diff -urN aptitude-0.0.7.15.org/src/Makefile.am aptitude-0.0.7.15/src/Makefile.am
+--- aptitude-0.0.7.15.org/src/Makefile.am	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/Makefile.am	Sat Feb 24 15:23:11 2001
+@@ -3,7 +3,7 @@
+ SUBDIRS=generic vscreen
+ 
+ localedir = $(datadir)/locale
+-INCLUDES = -Wall -Werror -I.. -I$(srcdir) -I$(top_srcdir)/lib -I../intl
++INCLUDES = -Wall -I.. -I$(srcdir) -I$(top_srcdir)/lib -I../intl #-Werror
+ DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+ 
+ bin_PROGRAMS=aptitude
+diff -urN aptitude-0.0.7.15.org/src/dep_item.cc aptitude-0.0.7.15/src/dep_item.cc
+--- aptitude-0.0.7.15.org/src/dep_item.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/dep_item.cc	Sat Feb 24 15:23:11 2001
+@@ -30,8 +30,11 @@
+ 
+ #include "generic/apt.h"
+ 
+-#include <apt-pkg/version.h>
++//#include <apt-pkg/version.h>
++#include <apt-pkg/systemfactory.h>
+ #include <apt-pkg/configuration.h>
++
++#define pkgCheckDep _system->checkDep
+ 
+ class pkg_depitem:public pkg_subtree
+ {
+diff -urN aptitude-0.0.7.15.org/src/download.cc aptitude-0.0.7.15/src/download.cc
+--- aptitude-0.0.7.15.org/src/download.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/download.cc	Sat Feb 24 15:23:11 2001
+@@ -23,6 +23,7 @@
+ #include <apt-pkg/error.h>
+ #include <apt-pkg/dpkgpm.h>
+ #include <apt-pkg/packagemanager.h>
++#include <apt-pkg/systemfactory.h>
+ #include <apt-pkg/sourcelist.h>
+ #include <apt-pkg/acquire.h>
+ #include <apt-pkg/acquire-item.h>
+@@ -213,7 +214,9 @@
+     }
+ 
+   // Make a package manager, get ready to download
+-  pkgDPkgPM pm(*apt_cache_file);
++  //pkgDPkgPM pm(*apt_cache_file);
++  pkgPackageManager *pm_ = _system->CreatePackageManager(*apt_cache_file);
++  pkgPackageManager &pm = *pm_;
+   if(!pm.GetArchives(&fetcher, &list, apt_package_records) || _error->PendingError())
+     {
+       _error->Error(_("Internal error: couldn't generate list of packages to download"));
+@@ -294,7 +297,7 @@
+ 	}
+ 
+       fprintf(f, "Aptitude " VERSION ": log report\n\n");
+-      fprintf(f, _("IMPORTANT: this log only lists intended actions; actions which fail due to\ndpkg problems may not be completed.\n\n"));
++      fprintf(f, _("IMPORTANT: this log only lists intended actions; actions which fail due to\nrpm problems may not be completed.\n\n"));
+       fprintf(f, _("Will install %li packages, and remove %li packages.\n"), (*apt_cache_file)->InstCount(), (*apt_cache_file)->DelCount());
+       if((*apt_cache_file)->UsrSize()>0)
+ 	fprintf(f, _("%li bytes of disk space will be used\n"), (long int) (*apt_cache_file)->UsrSize());
+@@ -370,7 +373,7 @@
+       _error->DumpErrors();
+       cerr<<_("Ack!  Something bad happened while installing packages.  Trying to recover:")<<endl;
+       // and this is really a hack:
+-      system("dpkg --configure -a");
++      //system("dpkg --configure -a");
+       _error->Discard();
+     }
+ 
+diff -urN aptitude-0.0.7.15.org/src/generic/Makefile.am aptitude-0.0.7.15/src/generic/Makefile.am
+--- aptitude-0.0.7.15.org/src/generic/Makefile.am	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/generic/Makefile.am	Sat Feb 24 15:23:11 2001
+@@ -1,7 +1,7 @@
+ MAINTAINERCLEANFILES=Makefile.in
+ 
+ localedir = $(datadir)/locale
+-INCLUDES = -Wall -Werror -I../../ -I$(srcdir) -I$(top_srcdir)/lib -I../../intl
++INCLUDES = -Wall -I../../ -I$(srcdir) -I$(top_srcdir)/lib -I../../intl #-Werror
+ DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
+ LDADD = @INTLLIBS@
+ 
+diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/generic/aptcache.cc
+--- aptitude-0.0.7.15.org/src/generic/aptcache.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/generic/aptcache.cc	Sat Feb 24 15:25:09 2001
+@@ -33,6 +33,7 @@
+ #include <apt-pkg/pkgsystem.h>
+ #include <apt-pkg/policy.h>
+ #endif
++#include <apt-pkg/systemfactory.h>
+ 
+ #include <vector>
+ 
+@@ -266,7 +267,7 @@
+ {
+   if(lock==-1)
+     return true;
+-  string statefile=_config->FindDir("Dir::Aptitude::state", "/var/state/aptitude")+"pkgstates";
++  string statefile=_config->FindDir("Dir::Aptitude::state", "/var/lib/aptitude")+"pkgstates";
+ 
+   FileFd newstate(statefile+".new", FileFd::WriteEmpty);
+   if(!newstate.IsOpen())
+@@ -648,7 +649,7 @@
+ bool aptitudeCacheFile::Open(OpProgress &Progress, bool WithLock)
+ {
+   if(WithLock)
+-    Lock=new pkgDpkgLock;
++    Lock=new pkgRpmLock;	// pkgDpkgLock;
+ 
+   if(_error->PendingError())
+     return false;
+@@ -659,7 +660,8 @@
+ 
+   if(WithLock)
+     {
+-      pkgMakeStatusCache(List, Progress);
++      //pkgMakeStatusCache(List, Progress);
++      _system->makeStatusCache(List, Progress);
+       if(_error->PendingError())
+ 	return _error->Error(_("The package lists or status file could not be parsed or opened."));
+       if(!_error->empty())
+@@ -675,7 +677,8 @@
+     }
+   else
+     {
+-      Map=pkgMakeStatusCacheMem(List, Progress);
++      //Map=pkgMakeStatusCacheMem(List, Progress);
++      Map=_system->makeStatusCacheMem(List, Progress);
+       Progress.Done();
+       if(!Map)
+ 	return false;
+diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.h aptitude-0.0.7.15/src/generic/aptcache.h
+--- aptitude-0.0.7.15.org/src/generic/aptcache.h	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/generic/aptcache.h	Sat Feb 24 15:25:42 2001
+@@ -31,6 +31,7 @@
+ #include <config.h>
+ 
+ #include <apt-pkg/depcache.h>
++#include <apt-pkg/rpminit.h>
+ 
+ #ifndef HAVE_LIBAPT_PKG3
+ #include <apt-pkg/dpkginit.h>
+@@ -207,7 +208,8 @@
+ {
+   MMap *Map;
+   aptitudeDepCache *Cache;
+-  pkgDpkgLock *Lock;
++  //pkgDpkgLock *Lock;
++  pkgRpmLock *Lock;
+ public:
+   // We look pretty much exactly like a pointer to a dep cache
+   inline operator aptitudeDepCache &() {return *Cache;};
+diff -urN aptitude-0.0.7.15.org/src/main.cc aptitude-0.0.7.15/src/main.cc
+--- aptitude-0.0.7.15.org/src/main.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/main.cc	Sat Feb 24 15:23:11 2001
+@@ -43,7 +43,9 @@
+ 
+ #include "../config.h"
+ 
+-#include <apt-pkg/init.h>
++//#include <apt-pkg/init.h>
++#include <apt-pkg/rpmfactory.h>
++#include <apt-pkg/rpminit.h>
+ 
+ class mypkgtree:public pkg_tree
+ {
+@@ -95,6 +97,11 @@
+ 
+ int main(int argc, char *argv[])
+ {
++  {
++    static RPMFactory bla;
++    static pkgRpmLock lock;
++  }
++
+   srandom(time(0));
+ 
+   setlocale(LC_ALL, "");
+diff -urN aptitude-0.0.7.15.org/src/pkg_columnizer.cc aptitude-0.0.7.15/src/pkg_columnizer.cc
+--- aptitude-0.0.7.15.org/src/pkg_columnizer.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/pkg_columnizer.cc	Sat Feb 24 15:24:01 2001
+@@ -32,6 +32,9 @@
+ #ifdef HAVE_LIBAPT_PKG3
+ #include <apt-pkg/pkgsystem.h>
+ #endif
++#include <apt-pkg/systemfactory.h>
++#define pkgCheckDep _system->checkDep
++
+ 
+ column_definition_list *pkg_item::pkg_columnizer::columns=NULL;
+ column_definition_list *pkg_item::pkg_columnizer::status_columns=NULL;
+diff -urN aptitude-0.0.7.15.org/src/pkg_info_screen.cc aptitude-0.0.7.15/src/pkg_info_screen.cc
+--- aptitude-0.0.7.15.org/src/pkg_info_screen.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/pkg_info_screen.cc	Sat Feb 24 15:23:11 2001
+@@ -69,11 +69,13 @@
+       tree->add_child(new pkg_description(pkg.VersionList(), _("Description")));
+       tree->add_child(new vs_staticitem(_("Priority: "),ver.PriorityType()?ver.PriorityType():"Unknown"));
+       tree->add_child(new vs_staticitem(_("Section: "),pkg.Section()?pkg.Section():_("Unknown")));
+-      tree->add_child(new vs_staticitem(_("Maintainer: "),rec.Maintainer()));
++      //tree->add_child(new vs_staticitem(_("Maintainer: "),rec.Maintainer()));
+       tree->add_child(new vs_staticitem(_("Compressed size: "), SizeToStr(ver->Size)));
+       tree->add_child(new vs_staticitem(_("Uncompressed size: "), SizeToStr(ver->InstalledSize)));
++#if 0
+       if(!rec.SourcePkg().empty())
+ 	tree->add_child(new vs_staticitem(_("Source Package: "),rec.SourcePkg()));
++#endif
+ 
+       setup_package_deps<pkg_item_with_generic_subtree>(pkg, ver, tree);
+     }
+diff -urN aptitude-0.0.7.15.org/src/pkg_info_screen.cc.orig aptitude-0.0.7.15/src/pkg_info_screen.cc.orig
+--- aptitude-0.0.7.15.org/src/pkg_info_screen.cc.orig	Thu Jan  1 01:00:00 1970
++++ aptitude-0.0.7.15/src/pkg_info_screen.cc.orig	Tue Dec 19 03:37:34 2000
+@@ -0,0 +1,106 @@
++// pkg_info_screen.cc
++//
++//  Copyright 2000 Daniel Burrows
++//
++//  This program is free software; you can redistribute it and/or modify
++//  it under the terms of the GNU General Public License as published by
++//  the Free Software Foundation; either version 2 of the License, or
++//  (at your option) any later version.
++//
++//  This program is distributed in the hope that it will be useful,
++//  but WITHOUT ANY WARRANTY; without even the implied warranty of
++//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++//  GNU General Public License for more details.
++//
++//  You should have received a copy of the GNU General Public License
++//  along with this program; see the file COPYING.  If not, write to
++//  the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++//  Boston, MA 02111-1307, USA.
++//
++//  Gathers information about a package into one
++// spot (pkg_grouppolicy_info*) and provides dedicated code to display
++// it (pkg_info_screen)
++
++#include "aptitude.h"
++
++#include "pkg_info_screen.h"
++
++#include "vscreen/vs_staticitem.h"
++
++#include "pkg_subtree.h"
++#include "pkg_item_with_subtree.h"
++#include "dep_item.h"
++#include "pkg_ver_item.h"
++#include "pkg_description_treeitem.h"
++
++#include "generic/apt.h"
++
++#include <apt-pkg/strutl.h>
++
++class pkg_grouppolicy_info:public pkg_grouppolicy
++{
++public:
++  void add_package(pkgCache::PkgIterator pkg, pkg_subtree *root);
++
++  static void setup_package_info(pkgCache::PkgIterator pkg, pkgCache::VerIterator ver, pkg_item_with_generic_subtree *tree);
++};
++
++void pkg_grouppolicy_info::add_package(pkgCache::PkgIterator pkg,
++				       pkg_subtree *root)
++{
++  pkg_item_with_generic_subtree *newtree=new pkg_item_with_generic_subtree(pkg, true);
++
++  setup_package_info(pkg, pkg_item::visible_version(pkg), newtree);
++
++  root->add_child(newtree);
++}
++
++void pkg_grouppolicy_info::setup_package_info(pkgCache::PkgIterator pkg,
++					      pkgCache::VerIterator ver,
++					      pkg_item_with_generic_subtree *tree)
++{
++
++  char buf[256];
++  
++  if(!ver.end())
++    {
++
++      pkgRecords::Parser &rec=apt_package_records->Lookup(ver.FileList());
++      tree->add_child(new pkg_description(pkg.VersionList(), _("Description")));
++      tree->add_child(new vs_staticitem(_("Priority: "),ver.PriorityType()?ver.PriorityType():"Unknown"));
++      tree->add_child(new vs_staticitem(_("Section: "),pkg.Section()?pkg.Section():_("Unknown")));
++      tree->add_child(new vs_staticitem(_("Maintainer: "),rec.Maintainer()));
++      tree->add_child(new vs_staticitem(_("Compressed size: "), SizeToStr(ver->Size)));
++      tree->add_child(new vs_staticitem(_("Uncompressed size: "), SizeToStr(ver->InstalledSize)));
++      if(!rec.SourcePkg().empty())
++	tree->add_child(new vs_staticitem(_("Source Package: "),rec.SourcePkg()));
++
++      setup_package_deps<pkg_item_with_generic_subtree>(pkg, ver, tree);
++    }
++
++  snprintf(buf, 256, _("Packages which depend on %s"), pkg.Name());
++  pkg_subtree *revtree=new pkg_subtree(buf);
++  setup_package_deps<pkg_subtree>(pkg, ver, revtree, true);
++  tree->add_child(revtree);
++
++  pkg_vertree_generic *newtree=new pkg_vertree_generic(_("Versions"), true);
++  setup_package_versions(pkg, newtree);
++  tree->add_child(newtree);
++}
++
++pkg_info_screen::pkg_info_screen(pkgCache::PkgIterator pkg, pkgCache::VerIterator ver)
++  :apt_info_tree(pkg.Name(), ver.end()?"":ver.VerStr())
++{
++  char buf[256];
++  set_root(setup_new_root(pkg, ver), true);
++  snprintf(buf, 256, _("Information about %s"), pkg.Name());
++  set_header(buf);
++}
++
++vs_treeitem *pkg_info_screen::setup_new_root(pkgCache::PkgIterator pkg,
++					     pkgCache::VerIterator ver)
++{
++  pkg_item_with_generic_subtree *tree=new pkg_item_with_generic_subtree(pkg, true);
++  pkg_grouppolicy_info::setup_package_info(pkg, ver, tree);
++  return tree;
++}
+diff -urN aptitude-0.0.7.15.org/src/pkg_ver_item.cc aptitude-0.0.7.15/src/pkg_ver_item.cc
+--- aptitude-0.0.7.15.org/src/pkg_ver_item.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/pkg_ver_item.cc	Sat Feb 24 15:23:11 2001
+@@ -36,6 +36,8 @@
+ #include <apt-pkg/configuration.h>
+ #include <apt-pkg/strutl.h>
+ 
++#define pkgCheckDep _system->checkDep
++
+ class pkg_ver_columnizer:public column_generator
+ {
+   pkgCache::VerIterator ver;
+diff -urN aptitude-0.0.7.15.org/src/pkg_ver_item.h aptitude-0.0.7.15/src/pkg_ver_item.h
+--- aptitude-0.0.7.15.org/src/pkg_ver_item.h	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/pkg_ver_item.h	Sat Feb 24 15:24:46 2001
+@@ -28,8 +28,11 @@
+ #include "pkg_grouppolicy.h"
+ #include "pkg_item_with_subtree.h"
+ 
+-#include <apt-pkg/version.h>
++/* #include <apt-pkg/version.h> */
+ #include <apt-pkg/depcache.h>
++#include <apt-pkg/systemfactory.h>
++#include <apt-pkg/depcache.h>
++#define pkgVersionCompare _system->versionCompare           
+ #ifdef HAVE_LIBAPT_PKG3
+ #include <apt-pkg/pkgsystem.h>
+ #endif
+diff -urN aptitude-0.0.7.15.org/src/vs_progress.cc aptitude-0.0.7.15/src/vs_progress.cc
+--- aptitude-0.0.7.15.org/src/vs_progress.cc	Sat Feb 24 15:23:02 2001
++++ aptitude-0.0.7.15/src/vs_progress.cc	Sat Feb 24 15:23:11 2001
+@@ -32,7 +32,7 @@
+ 
+   if(!Op.empty())
+     {
+-      assert(Percent>=0 && Percent<=100);
++      //assert(Percent>=0 && Percent<=100);
+       barsize=int(Percent*width/100.0);
+ 
+       snprintf(percent_string, 50, ": %i%%", int(Percent));
