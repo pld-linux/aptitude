@@ -3,11 +3,11 @@ Summary(pt_BR):Interface curses para o apt
 Summary(es):	Curses-based apt frontend
 Summary(pl):	Frontend dla apt'a oparty na bibliotece ncurses
 Name:		aptitude
-Version:	0.0.8.2
-Release:	1
+Version:	0.1.4
+Release:	0
 URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
-#Patch0:		aptitude-make.patch
+Patch0:		aptitude-make.patch
 Patch1:		aptitude-patch1
 License:	GPL
 Group:		Applications/Archiving
@@ -48,7 +48,7 @@ in a flexible and extreme flexibility and customization.
 
 %prep
 %setup -q -n %{name}-%{version}
-#%patch -p1
+%patch0 -p1
 %patch1 -p1
 
 %build
