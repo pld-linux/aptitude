@@ -46,7 +46,7 @@ personalizável.
 
 %build
 rm -f missing
-gettextize --copy --force
+%{__gettextize}
 aclocal
 %{__autoconf}
 autoheader
