@@ -1,0 +1,15 @@
+--- ./Makefile.am.org	Fri Sep 28 19:07:45 2001
++++ ./Makefile.am	Fri Sep 28 19:11:02 2001
+@@ -10,11 +10,10 @@
+ 
+ install-data-local:
+ 	[ -d $(DESTDIR)/var/lib/aptitude ] || mkdir $(DESTDIR)/var/lib/aptitude
+-	# FIXME: this really ought to use the autoconf directory variables
+ 
+ uninstall-local:
+ 	rm -fr $(DESTDIR)/var/lib/aptitude
+-	# Is -r a good idea here?
++	Is -r a good idea here?
+ 
+ dist-hook:
+ 	rm -f $(distdir)/ChangeLog
