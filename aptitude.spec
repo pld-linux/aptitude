@@ -68,14 +68,14 @@ CPPFLAGS="-Wno-deprecated -I/usr/include/ncurses"
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib
 
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+
 install -D %{name}.1 $RPM_BUILD_ROOT%{_mandir}/man1/%{name}.1
 install -D %{name}.fi.1 $RPM_BUILD_ROOT%{_mandir}/fi/man1/%{name}.1
 install -D %{name}.fr.1 $RPM_BUILD_ROOT%{_mandir}/fr/man1/%{name}.1
 install -D %{name}.gl.1 $RPM_BUILD_ROOT%{_mandir}/gl/man1/%{name}.1
 install -D %{name}.pl.1 $RPM_BUILD_ROOT%{_mandir}/pl/man1/%{name}.1
-
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
 
 %find_lang %{name}
 
