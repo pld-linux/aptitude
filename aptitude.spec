@@ -7,7 +7,8 @@ Version:	0.0.8.2
 Release:	1
 URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
-Patch0:		aptitude-make.patch
+#Patch0:		aptitude-make.patch
+Patch1:		aptitude-patch1
 License:	GPL
 Group:		Applications/Archiving
 Group(pl):	Aplikacje/Archiwizacja
@@ -47,7 +48,8 @@ in a flexible and extreme flexibility and customization.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch -p1
+#%patch -p1
+%patch1 -p1
 
 %build
 rm missing
