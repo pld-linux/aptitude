@@ -11,8 +11,6 @@ Patch1:		%{name}-rpm4.patch
 Patch2:		%{name}-am_fix.patch
 License:	GPL
 Group:		Applications/Archiving
-Group(de):	Applikationen/Archivierung
-Group(pl):	Aplikacje/Archiwizacja
 BuildRequires:	gzip
 BuildRequires:	apt-devel >= 0.3.19cnc36
 BuildRequires:	ncurses-devel
