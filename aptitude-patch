@@ -1565,19 +1565,6 @@ diff -rud aptitude-0.0.8.6/configure.in aptitude-0.0.8.6-new/configure.in
  AC_CHECK_HEADER(apt-pkg/policy.h, AC_DEFINE(HAVE_LIBAPT_PKG3))
  if test x$HAVE_LIBPTHREAD = x1
  then
-Only in aptitude-0.0.8.6-new/: configure~
-diff -rud aptitude-0.0.8.6/mkinstalldirs aptitude-0.0.8.6-new/mkinstalldirs
---- aptitude-0.0.8.6/mkinstalldirs	Sat Mar 11 06:25:38 2000
-+++ aptitude-0.0.8.6-new/mkinstalldirs	Fri May 18 21:35:54 2001
-@@ -4,7 +4,7 @@
- # Created: 1993-05-16
- # Public domain
- 
--# $Id$
-+# $Id$
- 
- errstatus=0
- 
 diff -rud aptitude-0.0.8.6/po/es_ES.po aptitude-0.0.8.6-new/po/es_ES.po
 --- aptitude-0.0.8.6/po/es_ES.po	Thu May  3 21:37:01 2001
 +++ aptitude-0.0.8.6-new/po/es_ES.po	Fri May 18 21:35:54 2001
