@@ -1,0 +1,19 @@
+--- aptitude-0.2.11.1/configure.in.orig	Sun Jan 19 17:59:26 2003
++++ aptitude-0.2.11.1/configure.in	Sun Jan 19 18:01:18 2003
+@@ -37,12 +37,12 @@
+ AC_CHECK_HEADER(apt-pkg/policy.h, AC_DEFINE(HAVE_LIBAPT_PKG3))
+ AC_CHECK_HEADER(hash_map,
+ 		AC_DEFINE(HAVE_HASH_MAP),
+-		AC_CHECK_HEADER(ext/hash_map,
+-				AC_DEFINE(HAVE_EXT_HASH_MAP)))
++		[AC_CHECK_HEADER(ext/hash_map,
++				AC_DEFINE(HAVE_EXT_HASH_MAP))])
+ AC_CHECK_HEADER(hash_set,
+ 		AC_DEFINE(HAVE_HASH_SET),
+-		AC_CHECK_HEADER(ext/hash_set,
+-				AC_DEFINE(HAVE_EXT_HASH_SET)))
++		[AC_CHECK_HEADER(ext/hash_set,
++				AC_DEFINE(HAVE_EXT_HASH_SET))])
+ 
+ if test x$HAVE_LIBPTHREAD = x1
+ then
