@@ -1,6 +1,7 @@
 Summary:	curses-based apt frontend
 Summary(pt_BR):Interface curses para o apt
 Summary(es):	Curses-based apt frontend
+Summary(pl):	Frontend dla apt'a oparty na bibliotece ncurses
 Name:		aptitude
 Version:	0.0.7.15
 Release:	1
@@ -9,6 +10,8 @@ Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.or
 Patch0:		aptitude-make.patch
 License:	GPL
 Group:		Applications/Archiving
+Group(pl):	Aplikacje/Archiwizacja
+Group(de):	Applikationen/Archivierung
 BuildRequires:	gzip
 BuildRequires:	apt-devel >= 0.3.19cnc36
 BuildRequires:	ncurses-devel
