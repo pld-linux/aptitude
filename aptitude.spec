@@ -26,7 +26,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	ncurses-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%description 
+%description
 Aptitude is a curses-based apt frontend with a number of useful
 extended features, including a mutt-like syntax for matching packages
 in a flexible and extreme flexibility and customization.
