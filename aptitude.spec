@@ -47,9 +47,9 @@ personalizável.
 %build
 rm -f missing
 %{__gettextize}
-aclocal
+%{__aclocal}
 %{__autoconf}
-autoheader
+%{__autoheader}
 %{__automake}
 %configure
 %{__make}
