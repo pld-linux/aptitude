@@ -54,8 +54,6 @@ rm -f missing
 %configure
 %{__make}
 
-gzip -9nf AUTHORS INSTALL NEWS README TODO %{name}-hackers-guide.txt
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/
@@ -78,5 +76,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/%{name}.1*
 %{_datadir}/%{name}/help.txt
 %{_localstatedir}/lib/%{name}
-%doc AUTHORS.gz INSTALL.gz NEWS.gz
-%doc README.gz TODO.gz %{name}-hackers-guide.txt.gz
+%doc AUTHORS INSTALL NEWS README TODO %{name}-hackers-guide.txt
