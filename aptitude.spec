@@ -11,6 +11,7 @@ Release:	0.1
 License:	GPL
 Group:		Applications/Archiving
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
+# Source0-md5:	c9a1af703b6d0e6e68e5ce8ae8b87b54
 Patch0:		%{name}-gcc3.patch
 Patch1:		%{name}-rpm.patch
 Patch2:		%{name}-acfix.patch
