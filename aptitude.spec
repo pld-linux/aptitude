@@ -50,10 +50,12 @@ in a flexible and extreme flexibility and customization.
 %patch -p1
 
 %build
-automake -a -c
+rm missing
+gettextize --copy --force
 aclocal
-autoheader
 autoconf
+autoheader
+automake -a -c
 %configure
 %{__make}
 
