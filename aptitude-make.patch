@@ -1,21 +1,21 @@
-diff -urN aptitude-0.0.7.15.org/configure.in aptitude-0.0.7.15/configure.in
---- aptitude-0.0.7.15.org/configure.in	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/configure.in	Sat Feb 24 15:34:05 2001
-@@ -10,8 +10,10 @@
- AC_PROG_CXX
- AC_PROG_RANLIB
+diff -ru aptitude-0.1.4/configure.in aptitude-0.1.4-AX/configure.in
+--- aptitude-0.1.4/configure.in	Tue Apr 10 13:25:42 2001
++++ aptitude-0.1.4-AX/configure.in	Wed May 23 00:58:48 2001
+@@ -14,8 +14,10 @@
+ ac_cv_c_const=yes
+ ac_cv_c_inline=yes
  
 +LIBS="$LIBS -lrpm -lrpmbuild -lrpmio -lpopt"
 +
  dnl Checks for libraries.
--AC_CHECK_LIB(curses, initscr)
-+AC_CHECK_LIB(ncurses, initscr)
+-AC_CHECK_LIB(curses, initscr, ,
++AC_CHECK_LIB(ncurses, initscr, ,
+ 	AC_MSG_ERROR([Can't find the curses libraries -- please install libncurses5-dev]))
  AC_CHECK_LIB(apt-pkg, main, , AC_MSG_ERROR([Can't find the APT libraries -- please install libapt-pkg-dev]))
  AC_CHECK_LIB(pthread, main,
- 	HAVE_LIBPTHREAD=1
-diff -urN aptitude-0.0.7.15.org/src/Makefile.am aptitude-0.0.7.15/src/Makefile.am
---- aptitude-0.0.7.15.org/src/Makefile.am	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/Makefile.am	Sat Feb 24 15:23:11 2001
+diff -ru aptitude-0.1.4/src/Makefile.am aptitude-0.1.4-AX/src/Makefile.am
+--- aptitude-0.1.4/src/Makefile.am	Sun Mar  4 04:34:25 2001
++++ aptitude-0.1.4-AX/src/Makefile.am	Wed May 23 00:58:16 2001
 @@ -3,7 +3,7 @@
  SUBDIRS=generic vscreen
  
@@ -25,25 +25,24 @@ diff -urN aptitude-0.0.7.15.org/src/Makefile.am aptitude-0.0.7.15/src/Makefile.a
  DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
  
  bin_PROGRAMS=aptitude
-diff -urN aptitude-0.0.7.15.org/src/dep_item.cc aptitude-0.0.7.15/src/dep_item.cc
---- aptitude-0.0.7.15.org/src/dep_item.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/dep_item.cc	Sat Feb 24 15:23:11 2001
-@@ -30,8 +30,11 @@
- 
+diff -ru aptitude-0.1.4/src/dep_item.cc aptitude-0.1.4-AX/src/dep_item.cc
+--- aptitude-0.1.4/src/dep_item.cc	Sun Mar 18 18:53:10 2001
++++ aptitude-0.1.4-AX/src/dep_item.cc	Wed May 23 00:59:42 2001
+@@ -30,7 +30,10 @@
  #include "generic/apt.h"
+ #include "generic/config_signal.h"
  
 -#include <apt-pkg/version.h>
 +//#include <apt-pkg/version.h>
 +#include <apt-pkg/systemfactory.h>
- #include <apt-pkg/configuration.h>
 +
 +#define pkgCheckDep _system->checkDep
  
  class pkg_depitem:public pkg_subtree
  {
-diff -urN aptitude-0.0.7.15.org/src/download.cc aptitude-0.0.7.15/src/download.cc
---- aptitude-0.0.7.15.org/src/download.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/download.cc	Sat Feb 24 15:23:11 2001
+diff -ru aptitude-0.1.4/src/download.cc aptitude-0.1.4-AX/src/download.cc
+--- aptitude-0.1.4/src/download.cc	Sun Apr  8 22:08:43 2001
++++ aptitude-0.1.4-AX/src/download.cc	Wed May 23 00:58:16 2001
 @@ -23,6 +23,7 @@
  #include <apt-pkg/error.h>
  #include <apt-pkg/dpkgpm.h>
@@ -52,7 +51,7 @@ diff -urN aptitude-0.0.7.15.org/src/download.cc aptitude-0.0.7.15/src/download.c
  #include <apt-pkg/sourcelist.h>
  #include <apt-pkg/acquire.h>
  #include <apt-pkg/acquire-item.h>
-@@ -213,7 +214,9 @@
+@@ -162,7 +163,9 @@
      }
  
    // Make a package manager, get ready to download
@@ -63,7 +62,7 @@ diff -urN aptitude-0.0.7.15.org/src/download.cc aptitude-0.0.7.15/src/download.c
    if(!pm.GetArchives(&fetcher, &list, apt_package_records) || _error->PendingError())
      {
        _error->Error(_("Internal error: couldn't generate list of packages to download"));
-@@ -294,7 +297,7 @@
+@@ -237,7 +240,7 @@
  	}
  
        fprintf(f, "Aptitude " VERSION ": log report\n\n");
@@ -72,7 +71,7 @@ diff -urN aptitude-0.0.7.15.org/src/download.cc aptitude-0.0.7.15/src/download.c
        fprintf(f, _("Will install %li packages, and remove %li packages.\n"), (*apt_cache_file)->InstCount(), (*apt_cache_file)->DelCount());
        if((*apt_cache_file)->UsrSize()>0)
  	fprintf(f, _("%li bytes of disk space will be used\n"), (long int) (*apt_cache_file)->UsrSize());
-@@ -370,7 +373,7 @@
+@@ -313,7 +316,7 @@
        _error->DumpErrors();
        cerr<<_("Ack!  Something bad happened while installing packages.  Trying to recover:")<<endl;
        // and this is really a hack:
@@ -81,9 +80,10 @@ diff -urN aptitude-0.0.7.15.org/src/download.cc aptitude-0.0.7.15/src/download.c
        _error->Discard();
      }
  
-diff -urN aptitude-0.0.7.15.org/src/generic/Makefile.am aptitude-0.0.7.15/src/generic/Makefile.am
---- aptitude-0.0.7.15.org/src/generic/Makefile.am	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/generic/Makefile.am	Sat Feb 24 15:23:11 2001
+Only in aptitude-0.1.4-AX/src: download.cc.orig
+diff -ru aptitude-0.1.4/src/generic/Makefile.am aptitude-0.1.4-AX/src/generic/Makefile.am
+--- aptitude-0.1.4/src/generic/Makefile.am	Mon Dec  4 04:54:18 2000
++++ aptitude-0.1.4-AX/src/generic/Makefile.am	Wed May 23 00:58:16 2001
 @@ -1,7 +1,7 @@
  MAINTAINERCLEANFILES=Makefile.in
  
@@ -93,9 +93,9 @@ diff -urN aptitude-0.0.7.15.org/src/generic/Makefile.am aptitude-0.0.7.15/src/ge
  DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
  LDADD = @INTLLIBS@
  
-diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/generic/aptcache.cc
---- aptitude-0.0.7.15.org/src/generic/aptcache.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/generic/aptcache.cc	Sat Feb 24 15:25:09 2001
+diff -ru aptitude-0.1.4/src/generic/aptcache.cc aptitude-0.1.4-AX/src/generic/aptcache.cc
+--- aptitude-0.1.4/src/generic/aptcache.cc	Tue Apr 10 13:09:15 2001
++++ aptitude-0.1.4-AX/src/generic/aptcache.cc	Wed May 23 00:58:16 2001
 @@ -33,6 +33,7 @@
  #include <apt-pkg/pkgsystem.h>
  #include <apt-pkg/policy.h>
@@ -104,7 +104,7 @@ diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/ge
  
  #include <vector>
  
-@@ -266,7 +267,7 @@
+@@ -291,7 +292,7 @@
  {
    if(lock==-1)
      return true;
@@ -113,7 +113,7 @@ diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/ge
  
    FileFd newstate(statefile+".new", FileFd::WriteEmpty);
    if(!newstate.IsOpen())
-@@ -648,7 +649,7 @@
+@@ -694,7 +695,7 @@
  bool aptitudeCacheFile::Open(OpProgress &Progress, bool WithLock)
  {
    if(WithLock)
@@ -122,7 +122,7 @@ diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/ge
  
    if(_error->PendingError())
      return false;
-@@ -659,7 +660,8 @@
+@@ -705,7 +706,8 @@
  
    if(WithLock)
      {
@@ -132,7 +132,7 @@ diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/ge
        if(_error->PendingError())
  	return _error->Error(_("The package lists or status file could not be parsed or opened."));
        if(!_error->empty())
-@@ -675,7 +677,8 @@
+@@ -721,7 +723,8 @@
      }
    else
      {
@@ -142,18 +142,19 @@ diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.cc aptitude-0.0.7.15/src/ge
        Progress.Done();
        if(!Map)
  	return false;
-diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.h aptitude-0.0.7.15/src/generic/aptcache.h
---- aptitude-0.0.7.15.org/src/generic/aptcache.h	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/generic/aptcache.h	Sat Feb 24 15:25:42 2001
+Only in aptitude-0.1.4-AX/src/generic: aptcache.cc.orig
+diff -ru aptitude-0.1.4/src/generic/aptcache.h aptitude-0.1.4-AX/src/generic/aptcache.h
+--- aptitude-0.1.4/src/generic/aptcache.h	Sun Mar 18 18:53:12 2001
++++ aptitude-0.1.4-AX/src/generic/aptcache.h	Wed May 23 00:58:16 2001
 @@ -31,6 +31,7 @@
  #include <config.h>
  
  #include <apt-pkg/depcache.h>
 +#include <apt-pkg/rpminit.h>
  
- #ifndef HAVE_LIBAPT_PKG3
- #include <apt-pkg/dpkginit.h>
-@@ -207,7 +208,8 @@
+ #include <sigc++/basic_signal.h>
+ 
+@@ -221,7 +222,8 @@
  {
    MMap *Map;
    aptitudeDepCache *Cache;
@@ -163,21 +164,22 @@ diff -urN aptitude-0.0.7.15.org/src/generic/aptcache.h aptitude-0.0.7.15/src/gen
  public:
    // We look pretty much exactly like a pointer to a dep cache
    inline operator aptitudeDepCache &() {return *Cache;};
-diff -urN aptitude-0.0.7.15.org/src/main.cc aptitude-0.0.7.15/src/main.cc
---- aptitude-0.0.7.15.org/src/main.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/main.cc	Sat Feb 24 15:23:11 2001
-@@ -43,7 +43,9 @@
+Only in aptitude-0.1.4-AX/src/generic: aptcache.h.orig
+diff -ru aptitude-0.1.4/src/main.cc aptitude-0.1.4-AX/src/main.cc
+--- aptitude-0.1.4/src/main.cc	Fri Mar 23 22:44:16 2001
++++ aptitude-0.1.4-AX/src/main.cc	Wed May 23 00:58:16 2001
+@@ -30,7 +30,9 @@
  
- #include "../config.h"
+ #include <sigc++/func_slot.h>
  
 -#include <apt-pkg/init.h>
 +//#include <apt-pkg/init.h>
 +#include <apt-pkg/rpmfactory.h>
 +#include <apt-pkg/rpminit.h>
  
- class mypkgtree:public pkg_tree
- {
-@@ -95,6 +97,11 @@
+ #include "ui.h"
+ 
+@@ -89,6 +91,11 @@
  
  int main(int argc, char *argv[])
  {
@@ -189,9 +191,10 @@ diff -urN aptitude-0.0.7.15.org/src/main.cc aptitude-0.0.7.15/src/main.cc
    srandom(time(0));
  
    setlocale(LC_ALL, "");
-diff -urN aptitude-0.0.7.15.org/src/pkg_columnizer.cc aptitude-0.0.7.15/src/pkg_columnizer.cc
---- aptitude-0.0.7.15.org/src/pkg_columnizer.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/pkg_columnizer.cc	Sat Feb 24 15:24:01 2001
+Only in aptitude-0.1.4-AX/src: main.cc.orig
+diff -ru aptitude-0.1.4/src/pkg_columnizer.cc aptitude-0.1.4-AX/src/pkg_columnizer.cc
+--- aptitude-0.1.4/src/pkg_columnizer.cc	Sun Mar 18 18:53:11 2001
++++ aptitude-0.1.4-AX/src/pkg_columnizer.cc	Wed May 23 00:58:16 2001
 @@ -32,6 +32,9 @@
  #ifdef HAVE_LIBAPT_PKG3
  #include <apt-pkg/pkgsystem.h>
@@ -202,10 +205,10 @@ diff -urN aptitude-0.0.7.15.org/src/pkg_columnizer.cc aptitude-0.0.7.15/src/pkg_
  
  column_definition_list *pkg_item::pkg_columnizer::columns=NULL;
  column_definition_list *pkg_item::pkg_columnizer::status_columns=NULL;
-diff -urN aptitude-0.0.7.15.org/src/pkg_info_screen.cc aptitude-0.0.7.15/src/pkg_info_screen.cc
---- aptitude-0.0.7.15.org/src/pkg_info_screen.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/pkg_info_screen.cc	Sat Feb 24 15:23:11 2001
-@@ -69,11 +69,13 @@
+diff -ru aptitude-0.1.4/src/pkg_info_screen.cc aptitude-0.1.4-AX/src/pkg_info_screen.cc
+--- aptitude-0.1.4/src/pkg_info_screen.cc	Sat Jan 27 02:12:37 2001
++++ aptitude-0.1.4-AX/src/pkg_info_screen.cc	Wed May 23 00:58:16 2001
+@@ -74,11 +74,13 @@
        tree->add_child(new pkg_description(pkg.VersionList(), _("Description")));
        tree->add_child(new vs_staticitem(_("Priority: "),ver.PriorityType()?ver.PriorityType():"Unknown"));
        tree->add_child(new vs_staticitem(_("Section: "),pkg.Section()?pkg.Section():_("Unknown")));
@@ -218,122 +221,13 @@ diff -urN aptitude-0.0.7.15.org/src/pkg_info_screen.cc aptitude-0.0.7.15/src/pkg
  	tree->add_child(new vs_staticitem(_("Source Package: "),rec.SourcePkg()));
 +#endif
  
-       setup_package_deps<pkg_item_with_generic_subtree>(pkg, ver, tree);
+       setup_package_deps<pkg_item_with_generic_subtree>(pkg, ver, tree, sig);
      }
-diff -urN aptitude-0.0.7.15.org/src/pkg_info_screen.cc.orig aptitude-0.0.7.15/src/pkg_info_screen.cc.orig
---- aptitude-0.0.7.15.org/src/pkg_info_screen.cc.orig	Thu Jan  1 01:00:00 1970
-+++ aptitude-0.0.7.15/src/pkg_info_screen.cc.orig	Tue Dec 19 03:37:34 2000
-@@ -0,0 +1,106 @@
-+// pkg_info_screen.cc
-+//
-+//  Copyright 2000 Daniel Burrows
-+//
-+//  This program is free software; you can redistribute it and/or modify
-+//  it under the terms of the GNU General Public License as published by
-+//  the Free Software Foundation; either version 2 of the License, or
-+//  (at your option) any later version.
-+//
-+//  This program is distributed in the hope that it will be useful,
-+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+//  GNU General Public License for more details.
-+//
-+//  You should have received a copy of the GNU General Public License
-+//  along with this program; see the file COPYING.  If not, write to
-+//  the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-+//  Boston, MA 02111-1307, USA.
-+//
-+//  Gathers information about a package into one
-+// spot (pkg_grouppolicy_info*) and provides dedicated code to display
-+// it (pkg_info_screen)
-+
-+#include "aptitude.h"
-+
-+#include "pkg_info_screen.h"
-+
-+#include "vscreen/vs_staticitem.h"
-+
-+#include "pkg_subtree.h"
-+#include "pkg_item_with_subtree.h"
-+#include "dep_item.h"
-+#include "pkg_ver_item.h"
-+#include "pkg_description_treeitem.h"
-+
-+#include "generic/apt.h"
-+
-+#include <apt-pkg/strutl.h>
-+
-+class pkg_grouppolicy_info:public pkg_grouppolicy
-+{
-+public:
-+  void add_package(pkgCache::PkgIterator pkg, pkg_subtree *root);
-+
-+  static void setup_package_info(pkgCache::PkgIterator pkg, pkgCache::VerIterator ver, pkg_item_with_generic_subtree *tree);
-+};
-+
-+void pkg_grouppolicy_info::add_package(pkgCache::PkgIterator pkg,
-+				       pkg_subtree *root)
-+{
-+  pkg_item_with_generic_subtree *newtree=new pkg_item_with_generic_subtree(pkg, true);
-+
-+  setup_package_info(pkg, pkg_item::visible_version(pkg), newtree);
-+
-+  root->add_child(newtree);
-+}
-+
-+void pkg_grouppolicy_info::setup_package_info(pkgCache::PkgIterator pkg,
-+					      pkgCache::VerIterator ver,
-+					      pkg_item_with_generic_subtree *tree)
-+{
-+
-+  char buf[256];
-+  
-+  if(!ver.end())
-+    {
-+
-+      pkgRecords::Parser &rec=apt_package_records->Lookup(ver.FileList());
-+      tree->add_child(new pkg_description(pkg.VersionList(), _("Description")));
-+      tree->add_child(new vs_staticitem(_("Priority: "),ver.PriorityType()?ver.PriorityType():"Unknown"));
-+      tree->add_child(new vs_staticitem(_("Section: "),pkg.Section()?pkg.Section():_("Unknown")));
-+      tree->add_child(new vs_staticitem(_("Maintainer: "),rec.Maintainer()));
-+      tree->add_child(new vs_staticitem(_("Compressed size: "), SizeToStr(ver->Size)));
-+      tree->add_child(new vs_staticitem(_("Uncompressed size: "), SizeToStr(ver->InstalledSize)));
-+      if(!rec.SourcePkg().empty())
-+	tree->add_child(new vs_staticitem(_("Source Package: "),rec.SourcePkg()));
-+
-+      setup_package_deps<pkg_item_with_generic_subtree>(pkg, ver, tree);
-+    }
-+
-+  snprintf(buf, 256, _("Packages which depend on %s"), pkg.Name());
-+  pkg_subtree *revtree=new pkg_subtree(buf);
-+  setup_package_deps<pkg_subtree>(pkg, ver, revtree, true);
-+  tree->add_child(revtree);
-+
-+  pkg_vertree_generic *newtree=new pkg_vertree_generic(_("Versions"), true);
-+  setup_package_versions(pkg, newtree);
-+  tree->add_child(newtree);
-+}
-+
-+pkg_info_screen::pkg_info_screen(pkgCache::PkgIterator pkg, pkgCache::VerIterator ver)
-+  :apt_info_tree(pkg.Name(), ver.end()?"":ver.VerStr())
-+{
-+  char buf[256];
-+  set_root(setup_new_root(pkg, ver), true);
-+  snprintf(buf, 256, _("Information about %s"), pkg.Name());
-+  set_header(buf);
-+}
-+
-+vs_treeitem *pkg_info_screen::setup_new_root(pkgCache::PkgIterator pkg,
-+					     pkgCache::VerIterator ver)
-+{
-+  pkg_item_with_generic_subtree *tree=new pkg_item_with_generic_subtree(pkg, true);
-+  pkg_grouppolicy_info::setup_package_info(pkg, ver, tree);
-+  return tree;
-+}
-diff -urN aptitude-0.0.7.15.org/src/pkg_ver_item.cc aptitude-0.0.7.15/src/pkg_ver_item.cc
---- aptitude-0.0.7.15.org/src/pkg_ver_item.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/pkg_ver_item.cc	Sat Feb 24 15:23:11 2001
-@@ -36,6 +36,8 @@
+Only in aptitude-0.1.4-AX/src: pkg_info_screen.cc.orig
+diff -ru aptitude-0.1.4/src/pkg_ver_item.cc aptitude-0.1.4-AX/src/pkg_ver_item.cc
+--- aptitude-0.1.4/src/pkg_ver_item.cc	Tue Apr 10 02:21:49 2001
++++ aptitude-0.1.4-AX/src/pkg_ver_item.cc	Wed May 23 00:58:16 2001
+@@ -41,6 +41,8 @@
  #include <apt-pkg/configuration.h>
  #include <apt-pkg/strutl.h>
  
@@ -342,10 +236,11 @@ diff -urN aptitude-0.0.7.15.org/src/pkg_ver_item.cc aptitude-0.0.7.15/src/pkg_ve
  class pkg_ver_columnizer:public column_generator
  {
    pkgCache::VerIterator ver;
-diff -urN aptitude-0.0.7.15.org/src/pkg_ver_item.h aptitude-0.0.7.15/src/pkg_ver_item.h
---- aptitude-0.0.7.15.org/src/pkg_ver_item.h	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/pkg_ver_item.h	Sat Feb 24 15:24:46 2001
-@@ -28,8 +28,11 @@
+Only in aptitude-0.1.4-AX/src: pkg_ver_item.cc.orig
+diff -ru aptitude-0.1.4/src/pkg_ver_item.h aptitude-0.1.4-AX/src/pkg_ver_item.h
+--- aptitude-0.1.4/src/pkg_ver_item.h	Sun Mar 18 18:53:11 2001
++++ aptitude-0.1.4-AX/src/pkg_ver_item.h	Wed May 23 00:58:16 2001
+@@ -30,8 +30,11 @@
  #include "pkg_grouppolicy.h"
  #include "pkg_item_with_subtree.h"
  
@@ -358,10 +253,11 @@ diff -urN aptitude-0.0.7.15.org/src/pkg_ver_item.h aptitude-0.0.7.15/src/pkg_ver
  #ifdef HAVE_LIBAPT_PKG3
  #include <apt-pkg/pkgsystem.h>
  #endif
-diff -urN aptitude-0.0.7.15.org/src/vs_progress.cc aptitude-0.0.7.15/src/vs_progress.cc
---- aptitude-0.0.7.15.org/src/vs_progress.cc	Sat Feb 24 15:23:02 2001
-+++ aptitude-0.0.7.15/src/vs_progress.cc	Sat Feb 24 15:23:11 2001
-@@ -32,7 +32,7 @@
+Only in aptitude-0.1.4-AX/src: pkg_ver_item.h.orig
+diff -ru aptitude-0.1.4/src/vs_progress.cc aptitude-0.1.4-AX/src/vs_progress.cc
+--- aptitude-0.1.4/src/vs_progress.cc	Mon Apr  9 22:42:29 2001
++++ aptitude-0.1.4-AX/src/vs_progress.cc	Wed May 23 00:58:16 2001
+@@ -31,7 +31,7 @@
  
    if(!Op.empty())
      {
@@ -370,3 +266,4 @@ diff -urN aptitude-0.0.7.15.org/src/vs_progress.cc aptitude-0.0.7.15/src/vs_prog
        barsize=int(Percent*width/100.0);
  
        snprintf(percent_string, 50, ": %i%%", int(Percent));
+Only in aptitude-0.1.4-AX/src: vs_progress.cc.orig
