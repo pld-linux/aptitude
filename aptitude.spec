@@ -3,7 +3,7 @@ Summary(pt_BR):Interface curses para o apt
 Summary(es):	Curses-based apt frontend
 Summary(pl):	Frontend dla apt'a oparty na bibliotece ncurses
 Name:		aptitude
-Version:	0.0.7.15
+Version:	0.0.8.2
 Release:	1
 URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
