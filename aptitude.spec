@@ -8,6 +8,7 @@ URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 Source0:	http://ftp.debian.org/debian/pool/main/a/aptitude/%{name}_%{version}.orig.tar.gz
 Patch0:		%{name}-patch
 Patch1:		%{name}-rpm4.patch
+Patch2:		%{name}-am_fix.patch
 License:	GPL
 Group:		Applications/Archiving
 Group(de):	Applikationen/Archivierung
@@ -44,6 +45,7 @@ personalizável.
 %setup -q -n %{name}-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 rm -f missing
