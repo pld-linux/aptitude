@@ -30,7 +30,7 @@ features as well.
 
 %description -l pl
 Aptitute jest graficzn±, bazuj±c± na ncurses nak³adk± na narzêdzie apt
-z wieloma ró¿nimi, u¿ytecznymi opcjami.
+z wieloma ró¿nymi, u¿ytecznymi opcjami.
 
 %description -l pt_BR
 O Aptitude é uma interface curses para o apt com um número de
