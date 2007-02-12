@@ -3,8 +3,8 @@
 # - strange groups browsing(?)
 # - browser doesn't show 1st line of descriptions
 Summary:	Curses-based apt frontend
-Summary(pt_BR):	Interface curses para o apt
-Summary(pl):	Frontend dla apta oparty na bibliotece ncurses
+Summary(pt_BR.UTF-8):   Interface curses para o apt
+Summary(pl.UTF-8):   Frontend dla apta oparty na bibliotece ncurses
 Name:		aptitude
 Version:	0.2.11.1
 Release:	0.1
@@ -35,15 +35,15 @@ Despite the version number, aptitude is quite usable; it does almost
 everything that dselect and console-apt do, and has its own extra
 features as well.
 
-%description -l pl
-Aptitute jest graficzn±, bazuj±c± na ncurses nak³adk± na narzêdzie apt
-z wieloma ró¿nymi, u¿ytecznymi opcjami.
+%description -l pl.UTF-8
+Aptitute jest graficznÄ…, bazujÄ…cÄ… na ncurses nakÅ‚adkÄ… na narzÄ™dzie apt
+z wieloma rÃ³Å¼nymi, uÅ¼ytecznymi opcjami.
 
-%description -l pt_BR
-O Aptitude é uma interface curses para o apt com um número de
-características úteis e avançadas, incluindo: uma sintaxe semelhante à
-do mutt para casamento de padrões em pacotes, de uma forma flexível e
-personalizável.
+%description -l pt_BR.UTF-8
+O Aptitude Ã© uma interface curses para o apt com um nÃºmero de
+caracterÃ­sticas Ãºteis e avanÃ§adas, incluindo: uma sintaxe semelhante Ã 
+do mutt para casamento de padrÃµes em pacotes, de uma forma flexÃ­vel e
+personalizÃ¡vel.
 
 %prep
 %setup -q
