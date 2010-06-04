@@ -3,8 +3,8 @@
 # - strange groups browsing(?)
 # - browser doesn't show 1st line of descriptions
 Summary:	Curses-based apt frontend
-Summary(pt_BR.UTF-8):	Interface curses para o apt
 Summary(pl.UTF-8):	Frontend dla apta oparty na bibliotece ncurses
+Summary(pt_BR.UTF-8):	Interface curses para o apt
 Name:		aptitude
 Version:	0.2.11.1
 Release:	0.1
