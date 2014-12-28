@@ -20,7 +20,7 @@ URL:		http://www.debian.org/Packages/unstable/admin/aptitude.html
 BuildRequires:	apt-devel >= 0.5.4cnc7
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	libsigc++1-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	ncurses-devel
