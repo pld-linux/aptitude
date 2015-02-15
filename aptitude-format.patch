@@ -1,0 +1,42 @@
+--- aptitude-0.3.5.1/src/generic/apt/apt.cc.orig	2015-02-15 11:14:01.579889294 +0100
++++ aptitude-0.3.5.1/src/generic/apt/apt.cc	2015-02-15 12:07:14.543088626 +0100
+@@ -196,7 +196,7 @@
+ 
+   if(!f)
+     {
+-      _error->Errno(_("Unable to open %s for writing"), cfgloc.c_str());
++      _error->Errno("ofstream::ofstream", _("Unable to open %s for writing"), cfgloc.c_str());
+       return;
+     }
+ 
+@@ -206,7 +206,7 @@
+ 
+   if(rename((cfgloc+".new").c_str(), cfgloc.c_str())!=0)
+     {
+-      _error->Errno(_("Unable to replace %s with new configuration file"), cfgloc.c_str());
++      _error->Errno("rename", _("Unable to replace %s with new configuration file"), cfgloc.c_str());
+       return;
+     }
+ }
+--- aptitude-0.3.5.1/src/generic/apt/log.cc.orig	2015-02-15 12:10:52.026412833 +0100
++++ aptitude-0.3.5.1/src/generic/apt/log.cc	2015-02-15 12:11:36.609744295 +0100
+@@ -50,7 +50,7 @@
+ 
+   if(!f)
+     {
+-      _error->Errno(_("Unable to open %s to log actions"), log.c_str());
++      _error->Errno("open", _("Unable to open %s to log actions"), log.c_str());
+ 
+       return false;
+     }
+--- aptitude-0.3.5.1/src/edit_pkg_hier.cc.orig	2005-10-05 08:55:21.000000000 +0200
++++ aptitude-0.3.5.1/src/edit_pkg_hier.cc	2015-02-15 13:32:00.019541875 +0100
+@@ -283,7 +283,7 @@
+ 
+   if(!f)
+     {
+-      _error->Errno(_("Couldn't open for writing"), file.c_str());
++      _error->Errno("fopen", _("Couldn't open for writing"), file.c_str());
+       return;
+     }
+ 

@@ -1,0 +1,13 @@
+--- aptitude-0.3.5.1/src/vscreen/vs_stacked.h.orig	2015-02-15 11:14:01.606555956 +0100
++++ aptitude-0.3.5.1/src/vscreen/vs_stacked.h	2015-02-15 12:43:32.966330540 +0100
+@@ -24,8 +24,8 @@
+     sigc::connection shown_conn, hidden_conn;
+ 
+     child_info(const vs_widget_ref &_w,
+-	       SigC::Connection &_shown_conn,
+-	       SigC::Connection &_hidden_conn)
++	       sigc::connection &_shown_conn,
++	       sigc::connection &_hidden_conn)
+       :w(_w), shown_conn(_shown_conn),
+        hidden_conn(_hidden_conn)
+     {

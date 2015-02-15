@@ -1,0 +1,283 @@
+--- aptitude-0.3.5.1/src/generic/problemresolver/test.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/problemresolver/test.cc	2015-02-15 10:23:27.816683270 +0100
+@@ -24,6 +24,7 @@
+ #include "dummy_universe.h"
+ #include "problemresolver.h"
+ 
++#include <cstring>
+ #include <iostream>
+ #include <fstream>
+ #include <string>
+--- aptitude-0.3.5.1/src/generic/util/temp.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/util/temp.cc	2015-02-15 10:17:56.216697183 +0100
+@@ -24,6 +24,7 @@
+ #include <aptitude.h>
+ 
+ #include <stdlib.h>
++#include <unistd.h>
+ 
+ namespace temp
+ {
+--- aptitude-0.3.5.1/src/generic/util/util.h.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/util/util.h	2015-02-15 10:17:40.113364528 +0100
+@@ -20,6 +20,7 @@
+ #ifndef UTIL_H
+ #define UTIL_H
+ 
++#include <cstdarg>
+ #include <string>
+ #include <utility>
+ 
+--- aptitude-0.3.5.1/src/generic/util/util.cc.orig	2015-02-15 11:01:03.963255256 +0100
++++ aptitude-0.3.5.1/src/generic/util/util.cc	2015-02-15 11:01:06.766588472 +0100
+@@ -23,6 +23,7 @@
+ #include <errno.h>
+ #include <pwd.h>
+ #include <stdarg.h>
++#include <stdio.h>
+ #include <string.h>
+ #include <sys/types.h>
+ #include <time.h>
+--- aptitude-0.3.5.1/src/generic/problemresolver/dummy_universe.cc.orig	2015-02-15 11:02:01.546586175 +0100
++++ aptitude-0.3.5.1/src/generic/problemresolver/dummy_universe.cc	2015-02-15 11:02:04.176586061 +0100
+@@ -19,6 +19,8 @@
+ 
+ #include "dummy_universe.h"
+ 
++#include <algorithm>
++
+ using namespace std;
+ 
+ dummy_package::dummy_package(const string &_name, unsigned int id)
+--- aptitude-0.3.5.1/src/generic/apt/acqprogress.cc.orig	2015-02-15 11:02:36.293251382 +0100
++++ aptitude-0.3.5.1/src/generic/apt/acqprogress.cc	2015-02-15 11:02:40.536584538 +0100
+@@ -299,7 +299,7 @@
+ 
+    char C = 0;
+    while (C != '\n' && C != '\r')
+-      read(STDIN_FILENO,&C,1);
++      if (read(STDIN_FILENO,&C,1) <= 0) break;
+    
+    manager.set_update(true);
+    k(true);
+--- aptitude-0.3.5.1/src/generic/apt/matchers.h.orig	2005-10-12 21:45:03.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/apt/matchers.h	2015-02-15 11:43:29.419815099 +0100
+@@ -23,6 +23,7 @@
+ #ifndef MATCHERS_H
+ #define MATCHERS_H
+ 
++#include <memory>
+ #include <string>
+ #include <vector>
+ 
+--- aptitude-0.3.5.1/src/generic/apt/apt.h.orig	2005-10-08 03:34:07.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/apt/apt.h	2015-02-15 11:50:41.116463649 +0100
+@@ -27,6 +27,7 @@
+ 
+ #include "aptcache.h"
+ 
++#include <cstring>
+ #include <utility>
+ 
+ class OpProgress;
+--- aptitude-0.3.5.1/src/generic/apt/aptitude_resolver_universe.cc.orig	2005-10-05 08:55:26.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/apt/aptitude_resolver_universe.cc	2015-02-15 12:08:38.219751781 +0100
+@@ -4,6 +4,7 @@
+ 
+ #include <generic/problemresolver/solution.h>
+ 
++#include <algorithm>
+ #include <sstream>
+ 
+ using namespace std;
+--- aptitude-0.3.5.1/src/generic/apt/log.cc.orig	2015-02-15 11:14:01.603222618 +0100
++++ aptitude-0.3.5.1/src/generic/apt/log.cc	2015-02-15 12:10:52.026412833 +0100
+@@ -31,6 +31,7 @@
+ #include <apt-pkg/strutl.h>
+ 
+ #include <errno.h>
++#include <stdio.h>
+ 
+ using namespace std;
+ 
+--- aptitude-0.3.5.1/src/generic/apt/pkg_hier_dump.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/generic/apt/pkg_hier_dump.cc	2015-02-15 12:23:01.009715573 +0100
+@@ -5,6 +5,7 @@
+ #include "pkg_hier.h"
+ 
+ #include <stdio.h>
++#include <string.h>
+ 
+ #include <apt-pkg/error.h>
+ 
+--- aptitude-0.3.5.1/src/vscreen/curses++.h.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/vscreen/curses++.h	2015-02-15 12:29:18.379699738 +0100
+@@ -22,6 +22,7 @@
+ #ifndef CURSES_PLUSPLUS_H
+ #define CURSES_PLUSPLUS_H
+ 
++#include <cstring>
+ #include <string>
+ #include <ncursesw/curses.h>
+ 
+--- aptitude-0.3.5.1/src/vscreen/fragment.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/vscreen/fragment.cc	2015-02-15 12:33:23.383022788 +0100
+@@ -1170,7 +1170,7 @@
+ 
+   const char *start=format;
+   // find all the arguments.
+-  char *nextpercent=strchr(start, '%');
++  const char *nextpercent=strchr(start, '%');
+ 
+   // loop 1: count the arguments.
+   while(nextpercent!=NULL)
+--- aptitude-0.3.5.1/src/vscreen/vscreen.cc.orig	2005-10-05 08:55:21.000000000 +0200
++++ aptitude-0.3.5.1/src/vscreen/vscreen.cc	2015-02-15 12:34:08.646354222 +0100
+@@ -48,6 +48,7 @@
+ // For _()
+ #include "../aptitude.h"
+ 
++#include <limits.h>
+ #include <signal.h>
+ 
+ #include <assert.h>
+--- aptitude-0.3.5.1/src/vscreen/vs_radiogroup.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/vscreen/vs_radiogroup.cc	2015-02-15 12:35:58.129682960 +0100
+@@ -4,6 +4,8 @@
+ 
+ #include "vs_togglebutton.h"
+ 
++#include <cstdlib>
++
+ #include <sigc++/adaptors/bind.h>
+ #include <sigc++/functors/mem_fun.h>
+ 
+--- aptitude-0.3.5.1/src/vscreen/transcode.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/vscreen/transcode.cc	2015-02-15 12:58:49.519625410 +0100
+@@ -22,6 +22,9 @@
+ #include <assert.h>
+ #include <errno.h>
+ #include <iconv.h>
++#include <langinfo.h>
++#include <stdlib.h>
++#include <string.h>
+ 
+ using namespace std;
+ 
+--- aptitude-0.3.5.1/src/cmdline/cmdline_action.cc.orig	2005-10-14 08:10:09.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_action.cc	2015-02-15 13:04:15.156278410 +0100
+@@ -5,6 +5,8 @@
+ #include "cmdline_action.h"
+ #include "cmdline_util.h"
+ 
++#include <cstdio>
++
+ #include <aptitude.h>
+ 
+ #include <generic/apt/apt.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_clean.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_clean.cc	2015-02-15 13:06:30.906272716 +0100
+@@ -14,6 +14,7 @@
+ #include <apt-pkg/error.h>
+ #include <apt-pkg/strutl.h>
+ 
++#include <cstdio>
+ #include <iostream>
+ 
+ #include <sys/stat.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_do_action.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_do_action.cc	2015-02-15 13:07:02.206271400 +0100
+@@ -12,6 +12,8 @@
+ #include "cmdline_simulate.h"
+ #include "cmdline_util.h"
+ 
++#include <cstdio>
++
+ #include <generic/apt/apt.h>
+ #include <generic/apt/config_signal.h>
+ #include <generic/apt/download_install_manager.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_forget_new.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_forget_new.cc	2015-02-15 13:12:45.162923676 +0100
+@@ -4,6 +4,8 @@
+ 
+ #include "cmdline_forget_new.h"
+ 
++#include <cstdio>
++
+ #include <aptitude.h>
+ 
+ #include <generic/apt/apt.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_search.cc.orig	2005-10-12 21:27:44.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_search.cc	2015-02-15 13:14:23.319586220 +0100
+@@ -6,6 +6,8 @@
+ 
+ #include "cmdline_common.h"
+ 
++#include <algorithm>
++
+ #include <aptitude.h>
+ #include <load_sortpolicy.h>
+ #include <pkg_columnizer.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_update.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_update.cc	2015-02-15 13:24:24.086227676 +0100
+@@ -21,6 +21,8 @@
+ 
+ #include <aptitude.h>
+ 
++#include <cstdio>
++
+ #include <generic/apt/apt.h>
+ #include <generic/apt/config_signal.h>
+ #include <generic/apt/download_update_manager.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_upgrade.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_upgrade.cc	2015-02-15 13:25:27.122891697 +0100
+@@ -10,6 +10,8 @@
+ #include "cmdline_simulate.h"
+ #include "cmdline_util.h"
+ 
++#include <cstdio>
++
+ #include <aptitude.h>
+ 
+ #include <generic/apt/apt.h>
+--- aptitude-0.3.5.1/src/cmdline/cmdline_util.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/cmdline/cmdline_util.cc	2015-02-15 13:25:59.272890348 +0100
+@@ -7,6 +7,8 @@
+ #include "cmdline_common.h"
+ #include "cmdline_progress.h"
+ 
++#include <memory>
++
+ #include <aptitude.h>
+ #include <ui.h>
+ #include <vs_progress.h>
+--- aptitude-0.3.5.1/src/mine/cmine.cc.orig	2005-10-05 08:55:22.000000000 +0200
++++ aptitude-0.3.5.1/src/mine/cmine.cc	2015-02-15 13:26:48.646221609 +0100
+@@ -29,6 +29,7 @@
+ 
+ #include <string>
+ #include <fstream>
++#include <unistd.h>
+ 
+ #ifndef DONT_USE_FANCYBOXES
+ // Some systems (*cough* Solaris xterms *cough*) don't like the fancy ASCII
+--- aptitude-0.3.5.1/src/main.cc.orig	2005-10-14 22:32:54.000000000 +0200
++++ aptitude-0.3.5.1/src/main.cc	2015-02-15 13:29:04.419549244 +0100
+@@ -25,6 +25,7 @@
+ 
+ #include <getopt.h>
+ #include <signal.h>
++#include <unistd.h>
+ 
+ #include "aptitude.h"
+ 
+--- aptitude-0.3.5.1/src/solution_fragment.cc.orig	2005-10-05 08:55:20.000000000 +0200
++++ aptitude-0.3.5.1/src/solution_fragment.cc	2015-02-15 13:57:37.782810677 +0100
+@@ -31,6 +31,7 @@
+ #include <vscreen/fragment.h>
+ #include <vscreen/transcode.h>
+ 
++#include <algorithm>
+ #include <vector>
+ 
+ typedef generic_solution<aptitude_universe> aptitude_solution;
